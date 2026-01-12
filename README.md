@@ -8,6 +8,23 @@
 
 ## Installation
 
+Download Backend App and put it inside of a new folder called 'backend'.
+Download Frontend App and put it inside of a new folder called 'frontend'.
+Example inside the current folder:
+```
+Super Pomodoro
+|
+|_backend
+|   |_...
+|_frontend
+|   |_...
+|_docker
+|   |_...
+|_.gitignore
+|_docker-compose.yml
+|_README.md
+```
+
 Run the following commands:
 
 ```
