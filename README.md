@@ -1,12 +1,10 @@
 # Super Pomodoro
 
-## IMPORTANT
-
-This project will be archived, will be replaced with another one to separate BE, FE and the local configurations.
-
 ## Requirements
 
-Docker desktop
+- Docker / Docker desktop
+- [Frontend App](https://github.com/DiosDuck/super-pomodoro-frontend)
+- [Backend App](https://github.com/DiosDuck/super-pomodoro-backend)
 
 ## Installation
 
