@@ -13,28 +13,29 @@ services:
     tmpfs:
       - /var/www/backend/var/cache
     container_name: backend
-    depends_on:
-      - 'rabbitmq'
+  #  depends_on:
+  #    - 'rabbitmq'
 
-  worker:
-    build:
-      context: .
-      dockerfile: ./docker/backend/Dockerfile
-    working_dir: /var/www/backend
-    environment:
-      APP_ENV: dev
-    volumes:
-      - ./backend:/var/www/backend:delegated
-      - ./docker/backend/.env.local:/var/www/backend/.env.local:ro
-      - ./docker/backend/dev.ini:/usr/locale/etc/php/conf.d/dev.ini:ro
-    tmpfs:
-      - /var/www/backend/var/cache
-    container_name: worker
-    command: 'php bin/console messenger:consume async -vv --time-limit=3600 --memory-limit=128M --sleep=1'
-    restart: 'unless-stopped'
-    depends_on:
-      - 'rabbitmq'
-      - 'backend'
+  # enable to have an automated consumer
+  # worker:
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/backend/Dockerfile
+  #   working_dir: /var/www/backend
+  #   environment:
+  #     APP_ENV: dev
+  #   volumes:
+  #     - ./backend:/var/www/backend:delegated
+  #     - ./docker/backend/.env.local:/var/www/backend/.env.local:ro
+  #     - ./docker/backend/dev.ini:/usr/locale/etc/php/conf.d/dev.ini:ro
+  #   tmpfs:
+  #     - /var/www/backend/var/cache
+  #   container_name: worker
+  #   command: 'php bin/console messenger:consume async -vv --time-limit=3600 --memory-limit=128M --sleep=1'
+  #   restart: 'unless-stopped'
+  #   depends_on:
+  #     - 'rabbitmq'
+  #     - 'backend'
 
   frontend:
     build:
@@ -78,15 +79,16 @@ services:
       - "1025:1025"
       - "8025:8025"
 
-  rabbitmq:
-    image: rabbitmq:4.2.2-management
-    container_name: rabbitmq
-    ports:
-      - "5673:5672"
-      - "15673:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: usermq
-      RABBITMQ_DEFAULT_PASS: passwordmq
-    volumes:
-      - "./locale/rabbitmq:/var/lib/rabbitmq"
+  # enable if needing t
+  # rabbitmq:
+  #   image: rabbitmq:4.2.2-management
+  #   container_name: rabbitmq
+  #   ports:
+  #     - "5673:5672"
+  #     - "15673:15672"
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: usermq
+  #     RABBITMQ_DEFAULT_PASS: passwordmq
+  #   volumes:
+  #     - "./locale/rabbitmq:/var/lib/rabbitmq"
       
