@@ -27,7 +27,7 @@ services:
     tmpfs:
       - /var/www/html/backend/var
 
-  composer:
+  php_tools:
     image: composer:2
     working_dir: /app
     volumes:

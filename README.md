@@ -32,23 +32,17 @@ docker compose build
 docker compose up -d
 ```
 
-In 'backend' container execute the following commands:
-- for updating the database
+After that use the 'composer' container to execute the following scripts (add sudo if required):
 ```
-# from docker desktop
-php bin/console doctrine:migration:migrate
-# from CLI
-(sudo) docker exec -ti backend php bin/console doctrine:migration:migrate
-```
-- for adding the JWT tokens
-```
-# from docker desktop
-php bin/console lexik:jwt:generate-keypair
-#from CLI
-(sudo) docker exec -ti backend php bin/console lexik:jwt:generate-keypair
+# composer install
+docker compose --profile tools run --rm php_tools composer install
+# update database
+docker compose --profile tools run --rm php_tools php bin/console doctrine:migration:migrate
+# adding the JWT tokens
+docker compose --profile tools run --rm php_tools php bin/console lexik:jwt:generate-keypair
 ```
 
-Wait till 'frontend' container is finished executing, the access the page through `localhost:8081`
+Wait till 'frontend' container is finished executing the build, the access the page through `localhost:8081`
 
 ## Walkthrough the app
 
@@ -59,7 +53,7 @@ Wait till 'frontend' container is finished executing, the access the page throug
 - Mailbox interface can be reached through `localhost:8025`
 - MySQL's database can be reacher though `localhost:3307` with credentials `root:root`
 
-### Functionalities
+### Frontend
 
 - authentication
     - is accessed through the navbar section
@@ -76,3 +70,19 @@ Wait till 'frontend' container is finished executing, the access the page throug
     - if no settings are configured, a default set is placed instead
     - a normal pomodoro cycle is structured the following: work -> break -> work -> break... and at X ammount of work sessions a longer break will happen
     - for visual purpose, the number of current work sessions is stored and saved for the respective day, the next day the cycles gets reseted
+- profile page
+    - can be accessed after signing in
+    - there are three sections:
+        - profile details
+        - pomodor session history in the past 7 days
+        - edit user data buttons, which will trigger a dialog to pop up
+
+### Backend
+
+- APIs:
+    - all APIs are documented under `/api/doc` Swagger page
+- Commands:
+    - `app:pomodoro:cleaner`
+        - clear pomodoro sessions older than 8 days
+    - `app:token:cleaner`
+        - clear all tokens generated older than 24 hours, if unused register tokens then delete the respective unactive accounts
