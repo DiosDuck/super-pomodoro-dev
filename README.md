@@ -14,9 +14,11 @@ Example inside the current folder:
 ```
 Super Pomodoro
 |
-|_backend
+|_backend -> backend project
 |   |_...
-|_frontend
+|_frontend -> frontend project
+|   |_...
+|_locale -> generated
 |   |_...
 |_docker
 |   |_...
