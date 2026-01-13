@@ -2,15 +2,13 @@ services:
   frontend:
     image: node:20-alpine
     working_dir: /app
-    environment:
-      CHOKIDAR_USEPOLLING: "true"
     volumes:
       - ./frontend:/app
       - webroot:/webroot/browser
     command: >
       sh -lc "
         npm ci &&
-        npx ng build --watch --poll 200 --configuration development --output-path=/webroot --delete-output-path=false
+        npx ng build --watch --poll 200 --output-path=/webroot --delete-output-path=false
       "
     
   apache:
