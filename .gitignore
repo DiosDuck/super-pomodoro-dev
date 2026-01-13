@@ -1,7 +1,7 @@
 #locale and projects
-locale
-./backend
-./frontend
+/locale
+/backend
+/frontend
 
 #generated files
 settings.json
