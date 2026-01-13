@@ -1,63 +1,40 @@
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: ./docker/backend/Dockerfile
-    working_dir: /var/www/backend
-    environment:
-      APP_ENV: dev
-    volumes:
-      - ./backend:/var/www/backend:delegated
-      - ./docker/backend/.env.local:/var/www/backend/.env.local:ro
-      - ./docker/backend/dev.ini:/usr/locale/etc/php/conf.d/dev.ini:ro
-    tmpfs:
-      - /var/www/backend/var/cache
-    container_name: backend
-  #  depends_on:
-  #    - 'rabbitmq'
-
-  # enable to have an automated consumer
-  # worker:
-  #   build:
-  #     context: .
-  #     dockerfile: ./docker/backend/Dockerfile
-  #   working_dir: /var/www/backend
-  #   environment:
-  #     APP_ENV: dev
-  #   volumes:
-  #     - ./backend:/var/www/backend:delegated
-  #     - ./docker/backend/.env.local:/var/www/backend/.env.local:ro
-  #     - ./docker/backend/dev.ini:/usr/locale/etc/php/conf.d/dev.ini:ro
-  #   tmpfs:
-  #     - /var/www/backend/var/cache
-  #   container_name: worker
-  #   command: 'php bin/console messenger:consume async -vv --time-limit=3600 --memory-limit=128M --sleep=1'
-  #   restart: 'unless-stopped'
-  #   depends_on:
-  #     - 'rabbitmq'
-  #     - 'backend'
-
   frontend:
-    build:
-      context: .
-      dockerfile: ./docker/frontend/Dockerfile
-    container_name: frontend
+    image: node:20-alpine
     working_dir: /app
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     volumes:
-      - ./frontend:/app:delegated
-
-  nginx:
-    image: nginx:1.27-alpine
-    container_name: web
-    depends_on:
-      - backend
-      - frontend
+      - ./frontend:/app
+      - webroot:/webroot/browser
+    command: >
+      sh -lc "
+        npm ci &&
+        npx ng build --watch --poll 200 --configuration development --output-path=/webroot --delete-output-path=false
+      "
+    
+  apache:
+    build:
+      context: ./docker/apache
+      dockerfile: Dockerfile
     ports:
       - "8081:80"
+    depends_on:
+      - frontend
     volumes:
-      - ./backend:/var/www/backend:ro
-      - ./frontend/dist/frontend/browser:/usr/share/nginx/html:ro
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - webroot:/var/www/html
+      - ./backend:/var/www/html/backend:ro
+      - ./docker/backend/.env.local:/var/www/html/backend/.env.local:ro
+      - ./docker/apache/.htaccess:/var/www/html/.htaccess:ro
+    tmpfs:
+      - /var/www/html/backend/var
+
+  composer:
+    image: composer:2
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    profiles: ["tools"]
 
   mysql:
     image: mysql:8.0
@@ -79,16 +56,5 @@ services:
       - "1025:1025"
       - "8025:8025"
 
-  # enable if needing t
-  # rabbitmq:
-  #   image: rabbitmq:4.2.2-management
-  #   container_name: rabbitmq
-  #   ports:
-  #     - "5673:5672"
-  #     - "15673:15672"
-  #   environment:
-  #     RABBITMQ_DEFAULT_USER: usermq
-  #     RABBITMQ_DEFAULT_PASS: passwordmq
-  #   volumes:
-  #     - "./locale/rabbitmq:/var/lib/rabbitmq"
-      
+volumes:
+  webroot:
