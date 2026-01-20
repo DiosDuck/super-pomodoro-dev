@@ -6,3 +6,4 @@
 #generated files
 settings.json
 .DS_Store
+docker/.DS_Store
