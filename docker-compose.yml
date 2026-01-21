@@ -28,10 +28,13 @@ services:
       - /var/www/html/backend/var:uid=33,gid=33,mode=0775
 
   php_tools:
-    image: composer:2
+    build:
+      context: ./docker/php_tools
+      dockerfile: Dockerfile
     working_dir: /app
     volumes:
       - ./backend:/app
+      - ./docker/backend/.env.local:/app/.env.local:ro
     profiles: ["tools"]
 
   mysql:
