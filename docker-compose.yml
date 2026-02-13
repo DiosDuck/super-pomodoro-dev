@@ -32,9 +32,15 @@ services:
       context: ./docker/php_tools
       dockerfile: Dockerfile
     working_dir: /app
+    environment:
+      XDEBUG_MODE: coverage
+      XDEBUG_CONFIG: "client_host=host.docker.internal client_port=9003 start_with_request=yes"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./backend:/app
       - ./docker/backend/.env.local:/app/.env.local:ro
+      - ./docker/php_tools/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     profiles: ["tools"]
 
   mysql:
