@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: node:20-alpine
+    image: node:24-alpine
     working_dir: /app
     volumes:
       - ./frontend:/app
