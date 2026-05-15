@@ -2,23 +2,36 @@ services:
   frontend:
     image: node:24-alpine
     working_dir: /app
+    profiles: ["dev"]
+    ports:
+      - "4201:4201"
+    volumes:
+      - ./frontend:/app
+    command: >
+      sh -lc "
+        npm ci &&
+        npx ng serve --host 0.0.0.0 --port 4201 --poll 200 --proxy-config proxy.conf.json
+      "
+
+  frontend-build:
+    image: node:24-alpine
+    working_dir: /app
+    profiles: ["demo"]
     volumes:
       - ./frontend:/app
       - webroot:/webroot/browser
     command: >
       sh -lc "
         npm ci &&
-        npx ng build --watch --poll 200  --configuration production --output-path=/webroot --delete-output-path=false
+        npx ng build --watch --poll 200 --configuration production --output-path=/webroot --delete-output-path=false
       "
-    
+
   apache:
     build:
       context: ./docker/apache
       dockerfile: Dockerfile
     ports:
       - "8081:80"
-    depends_on:
-      - frontend
     environment:
       XDEBUG_MODE: debug
     extra_hosts:
