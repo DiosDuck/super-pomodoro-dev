@@ -15,3 +15,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zip \
     opcache \
   && rm -rf /var/lib/apt/lists/*
+
+RUN pecl install xdebug && docker-php-ext-enable xdebug
