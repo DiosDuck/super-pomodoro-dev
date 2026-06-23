@@ -62,7 +62,7 @@ You can also override it for a single command, e.g. `COMPOSE_PROFILES=demo docke
 ### Common locations
 
 - Symfony/BE application is reached through `localhost:8081/api/{url}`, with Swagger API documentation at `localhost:8081/api/doc`
-- Mailpit web UI is reachable at `localhost:8025` (SMTP listens on `localhost:1025`)
+- Mailpit web UI is reachable at `localhost:8026` (SMTP listens on `localhost:1026`)
 - MySQL is reachable at `localhost:3307` with credentials `root:root` (root user) or `user:password` (non-root); the default database is `sp_dev`
 - `php_tools` is a separate container for Symfony CLI work. It is used to install dependencies and execute console scripts
 - XDEBUG is enabled by default in this project, to allow debugging on Apache and `php_tools`
